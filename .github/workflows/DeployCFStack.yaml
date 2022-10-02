@@ -36,6 +36,6 @@ jobs:
           aws-region: ${{ env.AWS_REGION }}
 
       - name: Create S3 Stack
-        if: ${{ github.event.inputs.cf-template= 's3bucket' }}
+        if: ${{ github.event.inputs.cf-template== 's3bucket' }}
         run: |
           aws s3api list-buckets --query "Buckets[].Name"
