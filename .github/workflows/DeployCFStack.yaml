@@ -33,7 +33,7 @@ jobs:
         with:
           role-to-assume: arn:aws:iam::792514764471:role/Githubactionsrole
           role-session-name: samplerolesession
-          aws-region: ${{ env.AWS_REGION }}
+          aws-region: ${{ github.event.inputs.aws-region }}
 
       - name: Create S3 Stack
         if: ${{ github.event.inputs.cf-template== 's3bucket' }}
