@@ -1,0 +1,64 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Template for waf rule creation
+
+Parameters:
+  RestApiGateway:
+    Type: String
+    Default: TestRestApiGateway
+
+Resources:
+  SampleIPSet:
+    Type: AWS::WAFv2::IPSet
+    Properties: 
+      Addresses: 
+        - 103.208.71.145/32
+      Description: blocking given ips
+      IPAddressVersion: IPV4
+      Name: Block Ip
+      Scope: REGIONAL
+      Tags: 
+        - Key: Name
+          Value: Block Ip List CF
+
+
+  WebACL:
+    Type: AWS::WAFv2::WebACL
+    Properties: 
+      CustomResponseBodies: 
+        CustomResponseBodyKey2:
+          ContentType: APPLICATION_JSON
+          Content: '{"error": "Access Denied"}'
+      DefaultAction: 
+        Allow: {}
+      Description: "created using cf"
+      Name: "test waf"
+      Rules: 
+        - Name: Block Ip
+          Action:
+            Block: {}
+          Priority: 0
+          Statement:
+            IPSetReferenceStatement:
+              Arn:
+                !GetAtt SampleIpSet.Arn
+          VisibilityConfig:
+            CloudWatchMetricsEnabled: true
+            MetricName: testrulemetric
+            SampledRequestsEnabled: true
+
+      Scope: REGIONAL
+      Tags: 
+        - Key: Name
+          Value: Cf_stack_waf
+      VisibilityConfig: 
+        CloudWatchMetricsEnabled: true
+        MetricName: WebACLTestmetric
+        SampledRequestsEnabled: true
+
+  RESTApiGatewayWafIntegration:
+    Type: AWS::WAFv2::WebACLAssociation
+    Properties: 
+      ResourceArn: !Ref RestApiGateway
+      WebACLArn: 
+        !GetAtt WebACL.Arn
+

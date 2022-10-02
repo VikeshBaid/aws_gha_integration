@@ -1,0 +1,41 @@
+name: Deploy Stack for Testing waf
+on:
+  workflow_dispatch:
+    inputs:
+      action:
+        description: 'Select and action [Create|Update|Delete|None]'
+        required: true
+      aws-region:
+        description: "AWS-Regions"
+        default: us-east-1
+        required: true
+      stack-name:
+        description: 'Select CF Stack [Lambda-Api-stack|s3-stack|waf-stack]'
+        required: false
+      cf-template:
+        description: 'Select the cf_template [lambda_api_gateway|s3bucket|waf]'
+        required: false
+permissions:
+      id-token: write   # This is required for requesting the JWT
+      contents: read 
+
+jobs:
+  CreateStack:
+    name: Create CF Stack
+    if: ${{ github.event.inputs.action== 'Create' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout repo content
+        uses: actions/checkout@v3
+
+      - name: configure aws credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          role-to-assume: arn:aws:iam::792514764471:role/Githubactionsrole
+          role-session-name: samplerolesession
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Create S3 Stack
+        if: ${{ github.event.inputs.cf-template= 's3bucket' }}
+        run: |
+          aws s3api list-buckets --query "Buckets[].Name"

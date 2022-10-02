@@ -1,0 +1,17 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: S3 bucket for lambda code
+
+Parameters:
+  TagName:
+    Description: Tag name
+    Type: String
+    Default: CF s3 bucket
+
+Resources:
+  LambdaCodeBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: 'lambda-code-bucket'
+      Tags:
+        - Key: Name
+          Value: !Ref TagName 
