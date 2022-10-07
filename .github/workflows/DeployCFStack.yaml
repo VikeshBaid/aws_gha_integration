@@ -38,4 +38,26 @@ jobs:
       - name: Create S3 Stack
         if: ${{ github.event.inputs.cf-template== 's3bucket' }}
         run: |
-          aws s3api list-buckets --query "Buckets[].Name"
+          echo "creting s3 bucket to for lambda code using s3bucket cloud formation template"
+
+          aws cloudformation create-stack \
+                        --stack-name ${{ github.event.inputs.stack-name }} \
+                        --template-body file://cf_stacks/cf_templates/lambda_s3_bucket.yaml \
+                        --region ${{ github.event.inputs.aws-region }}
+
+          aws cloudformation wait stack-create-complete \
+                        -- stack-name ${{ github.event.inputs.stack-name }} \
+                        --region ${{ github.event.inputs.aws-region }}
+
+          STATUS=$(aws cloudformation wait stack-create-complete \
+                        -- stack-name ${{ github.event.inputs.stack-name }} \
+                        --region ${{ github.event.inputs.aws-region }} \
+                        --output=text
+                        --query 'Stacks[0].{Status:StackStatus}')
+
+          if [ $STATUS = 'CREATE_COMPLETE' ]; then
+              echo "stack creation complete"
+          else
+              echo "Stack creation failed"
+              exit 1
+          fi 
