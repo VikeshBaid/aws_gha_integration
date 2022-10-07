@@ -10,7 +10,7 @@ Parameters:
   S3LambdaCodeBucket:
     Description: BUcket in which lambda code is present
     Type: String
-    Default: "lambda-code-bucket"
+    Default: "vb-test-lambda-code-bucket"
 
   S3LambdaCodeKey:
     Description: Object name of the lambda code zip
