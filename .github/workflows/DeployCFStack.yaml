@@ -35,7 +35,7 @@ jobs:
           role-session-name: samplerolesession
           aws-region: ${{ github.event.inputs.aws-region }}
 
-      - name: Create lambda rest api Stack
+      - name: Create S3 Bucket
         if: ${{ github.event.inputs.cf-template== 's3bucket' }}
         run: |
           echo "creating lambda function and integrated rest api"
@@ -52,7 +52,7 @@ jobs:
           STATUS=$(aws cloudformation wait stack-create-complete \
                         --stack-name ${{ github.event.inputs.stack-name }} \
                         --region ${{ github.event.inputs.aws-region }} \
-                        --output=text
+                        --output=text \
                         --query 'Stacks[0].{Status:StackStatus}')
 
           if [ $STATUS = 'CREATE_COMPLETE' ]; then
