@@ -35,7 +35,7 @@ jobs:
           role-session-name: samplerolesession
           aws-region: ${{ github.event.inputs.aws-region }}
 
-      - name: Create S3 Stack
+      - name: Create lambda rest api Stack
         if: ${{ github.event.inputs.cf-template== 'lambda_and_apigateway' }}
         run: |
           echo "creating lambda function and integrated rest api"
