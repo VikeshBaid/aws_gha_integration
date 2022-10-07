@@ -11,7 +11,7 @@ Resources:
   LambdaCodeBucket:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: 'lambda-code-bucket-1'
+      BucketName: 'vb-test-lambda-code-bucket'
       Tags:
         - Key: Name
           Value: !Ref TagName 
