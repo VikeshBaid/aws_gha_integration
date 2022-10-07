@@ -36,13 +36,13 @@ jobs:
           aws-region: ${{ github.event.inputs.aws-region }}
 
       - name: Create S3 Stack
-        if: ${{ github.event.inputs.cf-template== 's3bucket' }}
+        if: ${{ github.event.inputs.cf-template== 'lambda_and_apigateway' }}
         run: |
-          echo "creting s3 bucket to for lambda code using s3bucket cloud formation template"
+          echo "creating lambda function and integrated rest api"
 
           aws cloudformation create-stack \
                         --stack-name ${{ github.event.inputs.stack-name }} \
-                        --template-body file://cf_template/s3bucket.yaml \
+                        --template-body file://cf_template/lambda_and_apigateway.yaml \
                         --region ${{ github.event.inputs.aws-region }}
 
           # aws cloudformation wait stack-create-complete \
