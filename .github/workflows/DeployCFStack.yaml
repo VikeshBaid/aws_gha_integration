@@ -13,7 +13,7 @@ on:
         description: 'Select CF Stack [Lambda-Api-stack|s3-stack|waf-stack]'
         required: false
       cf-template:
-        description: 'Select the cf_template [lambda_api_gateway|s3bucket|waf]'
+        description: 'Select the cf_template [lambda_and_apigateway|s3bucket|waf]'
         required: false
 permissions:
       id-token: write   # This is required for requesting the JWT
