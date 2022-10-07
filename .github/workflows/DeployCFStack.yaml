@@ -45,19 +45,19 @@ jobs:
                         --template-body file://cf_template/s3bucket.yaml \
                         --region ${{ github.event.inputs.aws-region }}
 
-          aws cloudformation wait stack-create-complete \
-                        --stack-name ${{ github.event.inputs.stack-name }} \
-                        --region ${{ github.event.inputs.aws-region }}
+          # aws cloudformation wait stack-create-complete \
+          #               --stack-name ${{ github.event.inputs.stack-name }} \
+          #               --region ${{ github.event.inputs.aws-region }}
 
-          STATUS=$(aws cloudformation wait stack-create-complete \
-                        --stack-name ${{ github.event.inputs.stack-name }} \
-                        --region ${{ github.event.inputs.aws-region }} \
-                        --output=text
-                        --query 'Stacks[0].{Status:StackStatus}')
+          # STATUS=$(aws cloudformation wait stack-create-complete \
+          #               --stack-name ${{ github.event.inputs.stack-name }} \
+          #               --region ${{ github.event.inputs.aws-region }} \
+          #               --output=text
+          #               --query 'Stacks[0].{Status:StackStatus}')
 
-          if [ $STATUS = 'CREATE_COMPLETE' ]; then
-              echo "stack creation complete"
-          else
-              echo "Stack creation failed"
-              exit 1
-          fi 
+          # if [ $STATUS = 'CREATE_COMPLETE' ]; then
+          #     echo "stack creation complete"
+          # else
+          #     echo "Stack creation failed"
+          #     exit 1
+          # fi 
