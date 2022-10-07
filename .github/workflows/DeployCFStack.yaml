@@ -46,11 +46,11 @@ jobs:
                         --region ${{ github.event.inputs.aws-region }}
 
           aws cloudformation wait stack-create-complete \
-                        -- stack-name ${{ github.event.inputs.stack-name }} \
+                        --stack-name ${{ github.event.inputs.stack-name }} \
                         --region ${{ github.event.inputs.aws-region }}
 
           STATUS=$(aws cloudformation wait stack-create-complete \
-                        -- stack-name ${{ github.event.inputs.stack-name }} \
+                        --stack-name ${{ github.event.inputs.stack-name }} \
                         --region ${{ github.event.inputs.aws-region }} \
                         --output=text
                         --query 'Stacks[0].{Status:StackStatus}')
