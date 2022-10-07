@@ -15,6 +15,7 @@ on:
       cf-template:
         description: 'Select the cf_template [lambda_and_apigateway|s3bucket|waf]'
         required: false
+
 permissions:
       id-token: write   # This is required for requesting the JWT
       contents: read 
