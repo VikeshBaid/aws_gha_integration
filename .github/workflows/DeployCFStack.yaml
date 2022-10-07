@@ -42,7 +42,7 @@ jobs:
 
           aws cloudformation create-stack \
                         --stack-name ${{ github.event.inputs.stack-name }} \
-                        --template-body file://cf_stacks/cf_templates/lambda_s3_bucket.yaml \
+                        --template-body file://cf_stacks/cf_templates/${{ github.event.inputs.cf-template }}.yaml \
                         --region ${{ github.event.inputs.aws-region }}
 
           aws cloudformation wait stack-create-complete \
