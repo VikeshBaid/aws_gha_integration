@@ -42,7 +42,7 @@ jobs:
 
           aws cloudformation create-stack \
                         --stack-name ${{ github.event.inputs.stack-name }} \
-                        --template-body file://cf_template/${{ github.event.inputs.cf-template }}.yaml \
+                        --template-body file://cf_template/s3bucket.yaml \
                         --region ${{ github.event.inputs.aws-region }}
 
           aws cloudformation wait stack-create-complete \
