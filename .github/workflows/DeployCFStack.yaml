@@ -39,7 +39,7 @@ jobs:
       - name: Create S3 Bucket
         if: ${{ github.event.inputs.cf-template== 's3bucket' }}
         run: |
-          echo "creating lambda function and integrated rest api"
+          echo "creating s3 bucket for lambda code"
 
           aws cloudformation create-stack \
                         --stack-name ${{ github.event.inputs.stack-name }} \
@@ -61,4 +61,73 @@ jobs:
           else
               echo "Stack creation failed"
               exit 1
+          fi
+
+      - name: Create and Upload Package
+        if: ${{ github.event.inputs.action== 'upload_to_s3_bucket'}}
+        run: |
+          BUCKET="vb-test-lambda-code-bucket"
+          STATUS=$(aws cloudformation describe-stacks --region ${{ github.event.inputs.aws-region }} --stack-name ${{ github.event.inputs.stack-name }} --output=text --query 'Stacks[0].{Status:StackStatus}')
+          echo $STATUS
+          if [ $STATUS = 'CREATE_COMPLETE' ]; then
+            echo "creating package"
+            cd ./lambda_code/
+            zip -r package.zip ./*
+            echo "Updating lambda code in S3 bucket"
+            aws s3 cp package.zip s3://${BUCKET}/code/
+
+            echo "package update successful"
+          else:
+            echo "package updae failed"
+            exit 1
+          fi
+
+      - name: Create lambda Function and API Gateway
+        if: ${{ github.event.inputs.cf-template== 'lambda_and_apigateway' }}
+        run: |
+          echo "creating lambda function and integrated rest api"
+
+          aws cloudformation create-stack \
+                        --stack-name ${{ github.event.inputs.stack-name }} \
+                        --template-body file://cf_template/lambda_and_apigateway.yaml \
+                        --region ${{ github.event.inputs.aws-region }}
+
+          aws cloudformation wait stack-create-complete \
+                        --stack-name ${{ github.event.inputs.stack-name }} \
+                        --region ${{ github.event.inputs.aws-region }}
+
+          STATUS=$(aws cloudformation wait stack-create-complete \
+                        --stack-name ${{ github.event.inputs.stack-name }} \
+                        --region ${{ github.event.inputs.aws-region }} \
+                        --output=text \
+                        --query 'Stacks[0].{Status:StackStatus}')
+
+          if [ $STATUS = 'CREATE_COMPLETE' ]; then
+              echo "stack creation complete"
+          else
+              echo "Stack creation failed"
+              exit 1
           fi 
+
+  UpdateStack:
+    name: Update CF stack
+    if: ${{ github.event.inputs.action== 'Update' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout repo content
+        uses: actions/checkout@v3
+
+      - name: configure aws credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          role-to-assume: arn:aws:iam::792514764471:role/configroleawsgha
+          role-session-name: samplerolesession
+          aws-region: ${{ github.event.inputs.aws-region }}
+
+      # - name: Update-Stack
+      #   run: |
+      #     ASSOCIATION_FUNCTION="lambda-csdc-certin-sendmail"
+      #     BUCKET="vb-test-lambda-code-bucket"
+
+      #     echo "Creating package"
+      #     cd ./
