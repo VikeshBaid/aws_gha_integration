@@ -64,7 +64,7 @@ jobs:
           fi
 
       - name: Create and Upload Package
-        if: ${{ github.event.inputs.action== 'upload_to_s3_bucket'}}
+        if: ${{ github.event.inputs.cf-template== 'upload_to_s3_bucket'}}
         run: |
           BUCKET="vb-test-lambda-code-bucket"
           STATUS=$(aws cloudformation describe-stacks --region ${{ github.event.inputs.aws-region }} --stack-name ${{ github.event.inputs.stack-name }} --output=text --query 'Stacks[0].{Status:StackStatus}')
