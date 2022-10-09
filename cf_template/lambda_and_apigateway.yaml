@@ -40,6 +40,8 @@ Resources:
 
   RESTApiGateway:
     Type: AWS::ApiGateway::RestApi
+    DependsOn:
+      - LambdaFunction
     Properties: 
       Description: rest api to test waf
       Name: TestRestApiGateway
@@ -52,6 +54,8 @@ Resources:
 
   RESTApiMethod:
     Type: AWS::ApiGateway::Method
+    DependsOn:
+      - RESTApiGateway
     Properties: 
       ApiKeyRequired: false
       HttpMethod: POST
