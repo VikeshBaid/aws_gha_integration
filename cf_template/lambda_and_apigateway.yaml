@@ -68,6 +68,8 @@ Resources:
         - - 'arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/'
           - !GetAtt LambdaFunction.Arn
           - /invocations
+      MethodResponses:
+        - StatusCode: "200"
       ResourceId:  !GetAtt RESTApiGateway.RootResourceId
       RestApiId: !Ref RESTApiGateway
 
