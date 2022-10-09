@@ -73,12 +73,12 @@ jobs:
           echo $STATUS
           if [ $STATUS = 'CREATE_COMPLETE' ]; then
             echo "creating package"
-          #   cd ./lambda_code/
-          #   zip -r package.zip ./*
-          #   echo "Updating lambda code in S3 bucket"
-          #   aws s3 cp package.zip s3://${BUCKET}/code/
+            cd ./lambda_code/
+            zip -r package.zip ./*
+            echo "Updating lambda code in S3 bucket"
+            aws s3 cp package.zip s3://${BUCKET}/code/
 
-          #   echo "package update successful"
+            echo "package update successful"
           else:
             echo "package updae failed"
             exit 1
