@@ -15,7 +15,7 @@ on:
       cf-template:
         description: 'Select the cf_template [lambda_and_apigateway|s3bucket|waf]'
         required: false
-        
+
 permissions:
       id-token: write   # This is required for requesting the JWT
       contents: read 
@@ -56,7 +56,7 @@ jobs:
                         --output=text \
                         --query 'Stacks[0].{Status:StackStatus}')
 
-          if [ $STATUS = 'CREATE_COMPLETE' ]; then
+          if [ $STATUS == 'CREATE_COMPLETE' ]; then
               echo "stack creation complete"
           else
               echo "Stack creation failed"
@@ -67,47 +67,47 @@ jobs:
         if: ${{ github.event.inputs.cf-template== 's3bucket'}}
         run: |
           BUCKET="vb-test-lambda-code-bucket"
-          STATUS=$(aws cloudformation describe-stacks --region ${{ github.event.inputs.aws-region }} --stack-name ${{ github.event.inputs.stack-name }} --output=text --query 'Stacks[0].{Status:StackStatus}')
-          echo $STATUS
-          if [ $STATUS = 'CREATE_COMPLETE' ]; then
-            echo "creating package"
-            cd ./lambda_code/
-            zip -r package.zip ./*
-            echo "Updating lambda code in S3 bucket"
-            aws s3 cp package.zip s3://${BUCKET}/code/
+          # STATUS=$(aws cloudformation describe-stacks --region ${{ github.event.inputs.aws-region }} --stack-name ${{ github.event.inputs.stack-name }} --output=text --query 'Stacks[0].{Status:StackStatus}')
+          # echo $STATUS
+          # if [ $STATUS = 'CREATE_COMPLETE' ]; then
+          #   echo "creating package"
+          #   cd ./lambda_code/
+          #   zip -r package.zip ./*
+          #   echo "Updating lambda code in S3 bucket"
+          #   aws s3 cp package.zip s3://${BUCKET}/code/
 
-            echo "package update successful"
-          else:
-            echo "package updae failed"
-            exit 1
-          fi
+          #   echo "package update successful"
+          # else:
+          #   echo "package updae failed"
+          #   exit 1
+          # fi
 
       - name: Create lambda Function and API Gateway
         if: ${{ github.event.inputs.cf-template== 'lambda_and_apigateway' }}
         run: |
           echo "creating lambda function and integrated rest api"
 
-          aws cloudformation create-stack \
-                        --stack-name ${{ github.event.inputs.stack-name }} \
-                        --template-body file://cf_template/lambda_and_apigateway.yaml \
-                        --region ${{ github.event.inputs.aws-region }}
+          # aws cloudformation create-stack \
+          #               --stack-name ${{ github.event.inputs.stack-name }} \
+          #               --template-body file://cf_template/lambda_and_apigateway.yaml \
+          #               --region ${{ github.event.inputs.aws-region }}
 
-          aws cloudformation wait stack-create-complete \
-                        --stack-name ${{ github.event.inputs.stack-name }} \
-                        --region ${{ github.event.inputs.aws-region }}
+          # aws cloudformation wait stack-create-complete \
+          #               --stack-name ${{ github.event.inputs.stack-name }} \
+          #               --region ${{ github.event.inputs.aws-region }}
 
-          STATUS=$(aws cloudformation wait stack-create-complete \
-                        --stack-name ${{ github.event.inputs.stack-name }} \
-                        --region ${{ github.event.inputs.aws-region }} \
-                        --output=text \
-                        --query 'Stacks[0].{Status:StackStatus}')
+          # STATUS=$(aws cloudformation wait stack-create-complete \
+          #               --stack-name ${{ github.event.inputs.stack-name }} \
+          #               --region ${{ github.event.inputs.aws-region }} \
+          #               --output=text \
+          #               --query 'Stacks[0].{Status:StackStatus}')
 
-          if [ $STATUS = 'CREATE_COMPLETE' ]; then
-              echo "stack creation complete"
-          else
-              echo "Stack creation failed"
-              exit 1
-          fi 
+          # if [ $STATUS = 'CREATE_COMPLETE' ]; then
+          #     echo "stack creation complete"
+          # else
+          #     echo "Stack creation failed"
+          #     exit 1
+          # fi 
 
   UpdateStack:
     name: Update CF stack
