@@ -71,7 +71,7 @@ jobs:
           BUCKET="vb-test-lambda-code-bucket"
           STATUS=$(aws cloudformation describe-stacks --region ${{ github.event.inputs.aws-region }} --stack-name ${{ github.event.inputs.stack-name }} --output=text --query 'Stacks[0].{Status:StackStatus}')
           echo $STATUS
-          if [[ "$STATUS" -eq 'CREATE_COMPLETE' ]]; then
+          if [[ "$STATUS" -eq "CREATE_COMPLETE" ]]; then
               echo "creating package"
               cd ./lambda_code/
               zip -r package.zip ./*
@@ -88,27 +88,27 @@ jobs:
         run: |
           echo "creating lambda function and integrated rest api"
 
-          # aws cloudformation create-stack \
-          #               --stack-name ${{ github.event.inputs.stack-name }} \
-          #               --template-body file://cf_template/lambda_and_apigateway.yaml \
-          #               --region ${{ github.event.inputs.aws-region }}
+          aws cloudformation create-stack \
+                        --stack-name ${{ github.event.inputs.stack-name }} \
+                        --template-body file://cf_template/lambda_and_apigateway.yaml \
+                        --region ${{ github.event.inputs.aws-region }}
 
-          # aws cloudformation wait stack-create-complete \
-          #               --stack-name ${{ github.event.inputs.stack-name }} \
-          #               --region ${{ github.event.inputs.aws-region }}
+          aws cloudformation wait stack-create-complete \
+                        --stack-name ${{ github.event.inputs.stack-name }} \
+                        --region ${{ github.event.inputs.aws-region }}
 
-          # STATUS=$(aws cloudformation wait stack-create-complete \
-          #               --stack-name ${{ github.event.inputs.stack-name }} \
-          #               --region ${{ github.event.inputs.aws-region }} \
-          #               --output=text \
-          #               --query 'Stacks[0].{Status:StackStatus}')
+          STATUS=$(aws cloudformation wait stack-create-complete \
+                        --stack-name ${{ github.event.inputs.stack-name }} \
+                        --region ${{ github.event.inputs.aws-region }} \
+                        --output=text \
+                        --query 'Stacks[0].{Status:StackStatus}')
 
-          # if [[ "$STATUS" -eq 'CREATE_COMPLETE' ]]; then
-          #     echo "stack creation complete"
-          # else
-          #     echo "Stack creation failed"
-          #     exit 1
-          # fi 
+          if [[ "$STATUS" -eq "CREATE_COMPLETE" ]]; then
+              echo "stack creation complete"
+          else
+              echo "Stack creation failed"
+              exit 1
+          fi 
 
   UpdateStack:
     name: Update CF stack
