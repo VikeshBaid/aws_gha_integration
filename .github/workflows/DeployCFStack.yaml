@@ -41,7 +41,7 @@ jobs:
         run: |
           echo "creating s3 bucket for lambda code"
 
-          ${{ github.event.inputs.cf-template }}
+          echo ${{ github.event.inputs.cf-template }}
 
           # aws cloudformation create-stack \
           #               --stack-name ${{ github.event.inputs.stack-name }} \
