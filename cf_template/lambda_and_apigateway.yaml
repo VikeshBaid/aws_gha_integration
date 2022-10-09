@@ -54,8 +54,6 @@ Resources:
 
   RESTApiMethod:
     Type: AWS::ApiGateway::Method
-    DependsOn:
-      - RESTApiGateway
     Properties: 
       ApiKeyRequired: false
       HttpMethod: POST
@@ -75,26 +73,24 @@ Resources:
 
   ApiGatewayDeployment:
     Type: AWS::ApiGateway::Deployment
-    DependsOn:
-      - RESTApiMethod
     Properties:
       RestApiId: !Ref RESTApiGateway
       StageName: webhook
 
-  RestApiGatewayStage:
-    Type: AWS::ApiGateway::Stage
-    Properties: 
-      AccessLogSetting: 
-          DestinationArn: 'arn:aws:logs:us-east-1:792514764471:log-group:restapilogs'
-      DeploymentId: 'Cf created stage 1'
-      Description: "stage created by cf"
-      RestApiId: !Ref RESTApiGateway
-      StageName: webhook2
-      Tags: 
-        - Key: name
-          Value: !Ref TagName
-      Variables: 
-        Stack: Webhook
+  # RestApiGatewayStage:
+  #   Type: AWS::ApiGateway::Stage
+  #   Properties: 
+  #     AccessLogSetting: 
+  #         DestinationArn: 'arn:aws:logs:us-east-1:792514764471:log-group:restapilogs'
+  #     DeploymentId: 'Cf created stage 1'
+  #     Description: "stage created by cf"
+  #     RestApiId: !Ref RESTApiGateway
+  #     StageName: webhook2
+  #     Tags: 
+  #       - Key: name
+  #         Value: !Ref TagName
+  #     Variables: 
+  #       Stack: Webhook
 
   LambdaInvokePermission:
     Type: AWS::Lambda::Permission
