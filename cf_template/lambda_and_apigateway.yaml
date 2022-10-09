@@ -40,8 +40,6 @@ Resources:
 
   RESTApiGateway:
     Type: AWS::ApiGateway::RestApi
-    DependsOn:
-      - LambdaFunction
     Properties: 
       Description: rest api to test waf
       Name: TestRestApiGateway
@@ -73,6 +71,8 @@ Resources:
 
   ApiGatewayDeployment:
     Type: AWS::ApiGateway::Deployment
+    DependsOn:
+      - RESTApiMethod
     Properties:
       RestApiId: !Ref RESTApiGateway
       StageName: webhook
