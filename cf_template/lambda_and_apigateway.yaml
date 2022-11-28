@@ -69,15 +69,16 @@ Resources:
       EndpointConfiguration:
         Types:
           - REGIONAL
-      # Policy:
-      #   Version: 2012-10-17
-      #   Statement:
-      #     - 
-      #       Effect: Allow
-      #       Principal: "*"
-      #       Action: execute-api:Invoke
-      #       Resources:
-      #         - !Sub arn:aws:execute-api:us-east-1:${AWS::AccountId}:*/*/*/webhook
+      Policy:
+        Version: 2012-10-17
+        Statement:
+          - 
+            Effect: Allow
+            Principal: 
+              - AWS: "*"
+            Action: execute-api:Invoke
+            Resources:
+              - !Sub arn:aws:execute-api:us-east-1:${AWS::AccountId}:*/*/*/webhook
       Tags: 
         - Key: Name
           Value: webhook-restapi
@@ -110,7 +111,7 @@ Resources:
           - 
             StatusCode: "200"
         PassthroughBehavior: WHEN_NO_MATCH
-        Type: AWS_PROXY
+        Type: AWS
         Uri: !Sub "arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:${AWS::AccountId}:function:test-function-shodan/invocation"
       MethodResponses:
         - 
