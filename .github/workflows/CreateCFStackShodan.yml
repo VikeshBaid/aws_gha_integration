@@ -1,4 +1,4 @@
-name: Deploy Stack for Testing waf
+name: Deploy Stack for Testing Shodan
 on:
   workflow_dispatch:
     inputs:
