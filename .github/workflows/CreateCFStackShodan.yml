@@ -1,0 +1,90 @@
+name: Deploy Stack for Testing waf
+on:
+  workflow_dispatch:
+    inputs:
+      action:
+        description: 'Select and action [Create|Update|Delete|None]'
+        required: true
+      aws-region:
+        description: "AWS-Regions"
+        default: us-east-1
+        required: true
+      stack-name:
+        description: 'Select CF Stack [Lambda-Api-stack|s3-stack|waf-stack]'
+        required: false
+      cf-template:
+        description: 'Select the cf_template [lambda_and_apigateway|s3bucket|waf]'
+        required: false
+
+permissions:
+      id-token: write   # This is required for requesting the JWT
+      contents: read 
+
+jobs:
+  CreateStack:
+    name: Create CF Stack
+    if: ${{ github.event.inputs.action== 'Create' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout repo content
+        uses: actions/checkout@v3
+
+      - name: configure aws credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          role-to-assume: arn:aws:iam::792514764471:role/configroleawsgha
+          role-session-name: samplerolesession
+          aws-region: ${{ github.event.inputs.aws-region }}
+
+      - name: Create S3 Bucket
+        if: ${{ github.event.inputs.cf-template== 's3bucket' }}
+        run: |
+          echo "creating s3 bucket for lambda code"
+
+          echo ${{ github.event.inputs.cf-template }}
+
+#           aws cloudformation create-stack \
+#                         --stack-name ${{ github.event.inputs.stack-name }} \
+#                         --template-body file://cf_template/s3bucket.yaml \
+#                         --region ${{ github.event.inputs.aws-region }}
+
+#           aws cloudformation wait stack-create-complete \
+#                         --stack-name ${{ github.event.inputs.stack-name }} \
+#                         --region ${{ github.event.inputs.aws-region }}
+
+#           STATUS=$(aws cloudformation wait stack-create-complete \
+#                         --stack-name ${{ github.event.inputs.stack-name }} \
+#                         --region ${{ github.event.inputs.aws-region }} \
+#                         --output=text \
+#                         --query 'Stacks[0].{Status:StackStatus}')
+
+#           if [[ "$STATUS" -eq "CREATE_COMPLETE" ]]; then
+#               echo "stack creation complete"
+#           else
+#               echo "Stack creation failed"
+#               exit 1
+#           fi
+
+
+  UpdateStack:
+    name: Update CF stack
+    if: ${{ github.event.inputs.action== 'Update' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout repo content
+        uses: actions/checkout@v3
+
+      - name: configure aws credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          role-to-assume: arn:aws:iam::792514764471:role/configroleawsgha
+          role-session-name: samplerolesession
+          aws-region: ${{ github.event.inputs.aws-region }}
+
+      # - name: Update-Stack
+      #   run: |
+      #     ASSOCIATION_FUNCTION="lambda-csdc-certin-sendmail"
+      #     BUCKET="vb-test-lambda-code-bucket"
+
+      #     echo "Creating package"
+      #     cd ./
