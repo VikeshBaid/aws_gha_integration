@@ -126,7 +126,7 @@ Resources:
       RestApiId: !Ref WebhookRestApi
       StageName: ""
 
-  RestApiGatewayStage:
+  ApiStage:
     Type: AWS::ApiGateway::Stage
     DependsOn:
       - ApiDeployment
@@ -139,7 +139,7 @@ Resources:
       StageName: api
       Tags: 
         - Key: Name
-          Value: !Ref Webhook-stage
+          Value: webhook-stage
         - Key: component
           Value: !Ref Component
 
