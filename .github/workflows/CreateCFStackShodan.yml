@@ -83,6 +83,33 @@ jobs:
               exit 1
           fi
 
+      - name: Create Lambda function and dead letter queue
+        if: ${{ github.event.inputs.cf-template== 'lambda_and_apigateway' }}
+        run: |
+          echo "creating lambda function and integrated rest api"
+
+          aws cloudformation create-stack \
+                        --stack-name ${{ github.event.inputs.stack-name }} \
+                        --template-body file://cf_template/lambda_and_apigateway.yaml \
+                        --region ${{ github.event.inputs.aws-region }}
+
+          aws cloudformation wait stack-create-complete \
+                        --stack-name ${{ github.event.inputs.stack-name }} \
+                        --region ${{ github.event.inputs.aws-region }}
+
+          STATUS=$(aws cloudformation wait stack-create-complete \
+                        --stack-name ${{ github.event.inputs.stack-name }} \
+                        --region ${{ github.event.inputs.aws-region }} \
+                        --output=text \
+                        --query 'Stacks[0].{Status:StackStatus}')
+
+          if [[ "$STATUS" -eq "CREATE_COMPLETE" ]]; then
+              echo "stack creation complete"
+          else
+              echo "Stack creation failed"
+              exit 1
+          fi 
+
 
   UpdateStack:
     name: Update CF stack
