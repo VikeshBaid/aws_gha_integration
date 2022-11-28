@@ -61,72 +61,94 @@ Resources:
           Value: !Ref Component
       Timeout: 300
 
-  # RESTApiGateway:
-  #   Type: AWS::ApiGateway::RestApi
-  #   Properties: 
-  #     Description: rest api to test waf
-  #     Name: TestRestApiGateway
-  #     EndpointConfiguration:
-  #       Types:
-  #         - REGIONAL
-  #     Tags: 
-  #       - Key: Name
-  #         Value: !Ref TagName
+  WebhookRestApi:
+    Type: AWS::ApiGateway::RestApi
+    Properties: 
+      Description: provides api for shodan alerts automation
+      Name: shodan-webhooks-restapi
+      EndpointConfiguration:
+        Types:
+          - REGIONAL
+      Policy:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal: "*"
+            Action: execute-api:Invoke
+            Resources:
+              - !Sub arn:aws:execute-api:us-east-1:${AWS::AccountId}:*/*/*/webhook
+      Tags: 
+        - Key: Name
+          Value: webhook-restapi
+        - Key: component
+          Value: !Ref Component
 
-  # RESTApiMethod:
-  #   Type: AWS::ApiGateway::Method
-  #   Properties: 
-  #     ApiKeyRequired: false
-  #     HttpMethod: POST
-  #     Integration: 
-  #       IntegrationHttpMethod: POST
-  #       Type: AWS_PROXY
-  #       Uri: !Join
-  #       - ''
-  #       - - 'arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/'
-  #         - !GetAtt LambdaFunction.Arn
-  #         - /invocations
-  #     MethodResponses:
-  #           -
-  #             ResponseParameters:
-  #                 method.response.header.Content-Length: true
-  #                 method.response.header.Content-Type: true
-  #                 method.response.header.Connection: true
-  #             StatusCode: "200"
-  #     ResourceId:  !GetAtt RESTApiGateway.RootResourceId
-  #     RestApiId: !Ref RESTApiGateway
+  WebhookResource:
+    Type: AWS::ApiGateway::Resource
+    DependsOn:
+      - WebhookRestApi
+    Properties:
+      ParentId: !GetAtt WebhookRestApi.RootResourceId
+      PathPart: webhook
+      RestApiId: !Ref WebhookRestApi
 
-  # ApiGatewayDeployment:
-  #   Type: AWS::ApiGateway::Deployment
-  #   DependsOn:
-  #     - RESTApiMethod
-  #   Properties:
-  #     RestApiId: !Ref RESTApiGateway
-  #     StageName: webhook
 
-  # RestApiGatewayStage:
-  #   Type: AWS::ApiGateway::Stage
-  #   Properties: 
-  #     AccessLogSetting: 
-  #         DestinationArn: 'arn:aws:logs:us-east-1:792514764471:log-group:restapilogs'
-  #     DeploymentId: 'Cf created stage 1'
-  #     Description: "stage created by cf"
-  #     RestApiId: !Ref RESTApiGateway
-  #     StageName: webhook2
-  #     Tags: 
-  #       - Key: name
-  #         Value: !Ref TagName
-  #     Variables: 
-  #       Stack: Webhook
+  RESTApiMethod:
+    Type: AWS::ApiGateway::Method
+    DependsOn: 
+      - LambdaFunction
+    Properties: 
+      AuthorizationType: NONE
+      HttpMethod: POST
+      ApiKeyRequired: false
+      ResourceId: !Ref WebhookResource
+      RestApiId: !Ref WebhookRestApi
+      Integration: 
+        IntegrationHttpMethod: POST
+        IntegrationResponses:
+          - 
+            StatusCode: "200"
+        PassthroughBehavior: WHEN_NO_MATCH
+        Type: AWS_PROXY
+        Uri: !Sub "arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:${AWS::AccountId}:function:test-function-shodan/invocation"
+      MethodResponses:
+        - 
+          StatusCode: "200"
+      RequestModels:
+        application/json: Empty
 
-  # LambdaInvokePermission:
-  #   Type: AWS::Lambda::Permission
-  #   DependsOn: LambdaFunction
-  #   Properties:
-  #     Action: lambda:InvokeFunction
-  #     FunctionName: !Ref LambdaFunction
-  #     Principal: apigateway.amazonaws.com
-  #     SourceArn: !Sub
-  #       - arn:aws:execute-api:us-east-1:${AWS::AccountId}:${RestApiId}/*/*/webhook2
-  #       - { RestApiId: !Ref RESTApiGateway }
+  ApiDeployment:
+    Type: AWS::ApiGateway::Deployment
+    DependsOn:
+      - RESTApiMethod
+    Properties:
+      Description: Dummy deployment Stage
+      RestApiId: !Ref WebhookRestApi
+      StageName: ""
 
+  RestApiGatewayStage:
+    Type: AWS::ApiGateway::Stage
+    DependsOn:
+      - ApiDeployment
+    Properties: 
+      AccessLogSetting: 
+          DestinationArn: 'arn:aws:logs:us-east-1:792514764471:log-group:restapilogs'
+      DeploymentId: !Ref ApiDeployment
+      Description: "Stage for api"
+      RestApiId: !Ref WebhookRestApi
+      StageName: api
+      Tags: 
+        - Key: Name
+          Value: !Ref Webhook-stage
+        - Key: component
+          Value: !Ref Component
+
+  LambdaInvokePermission:
+    Type: AWS::Lambda::Permission
+    DependsOn: 
+      - LambdaFunction
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref LambdaFunction
+      Principal: apigateway.amazonaws.com
+      SourceArn: !Sub arn:aws:execute-api:us-east-1:${AWS::AccountId}:${WebhookRestApi}/*/POST/webhook
