@@ -65,7 +65,7 @@ Resources:
     Type: AWS::ApiGateway::RestApi
     Properties: 
       Description: provides api for shodan alerts automation
-      Name: shodan-webhooks-restapi
+      Name: shodan-webhooks
       EndpointConfiguration:
         Types:
           - REGIONAL
