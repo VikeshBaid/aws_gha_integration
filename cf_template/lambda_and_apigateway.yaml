@@ -126,8 +126,7 @@ Resources:
     Properties:
       Description: Dummy deployment Stage
       RestApiId: !Ref WebhookRestApi
-      StageName: ""
-
+      
   ApiStage:
     Type: AWS::ApiGateway::Stage
     DependsOn:
