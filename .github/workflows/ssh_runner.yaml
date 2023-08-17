@@ -33,6 +33,7 @@ jobs:
       - name: upload file to github
         run: |
           git clone git@github.com:VikeshBaid/aws_gha_integration.git
+          git remote set-url origin git@github.com:VikeshBaid/aws_gha_integration.git
           cd aws_gha_integration
           echo "test file to upload into github" > test1.txt
           git add -A
