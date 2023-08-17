@@ -19,11 +19,6 @@ jobs:
           role-session-name: samplerolesession
           aws-region: ${{ github.event.inputs.aws-region }}
 
-      - name: Set up Python
-        uses: action/setup-python@v3
-        with:
-          python-version: "3.9"
-
       - name: Create SSH key
         run: |
           mkdir -p ~/.ssh/
