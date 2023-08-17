@@ -12,12 +12,12 @@ jobs:
       - name: checkout repo contents
         uses: actions/checkout@v3
 
-      - name: configure aws credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          role-to-assume: arn:aws:iam::792514764471:role/configroleawsgha
-          role-session-name: samplerolesession
-          aws-region: us-east-1
+      #- name: configure aws credentials
+      #  uses: aws-actions/configure-aws-credentials@v1
+      #  with:
+      #    role-to-assume: arn:aws:iam::792514764471:role/configroleawsgha
+      #    role-session-name: samplerolesession
+      #    aws-region: us-east-1
 
       - name: Create SSH key
         run: |
