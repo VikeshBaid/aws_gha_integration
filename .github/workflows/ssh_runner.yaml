@@ -1,6 +1,6 @@
 name: Adding SSH Key
 on:
-  workflow dispatch:
+  workflow_dispatch:
     inputs:
       actions:
         description: "anything"
