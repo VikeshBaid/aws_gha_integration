@@ -1,10 +1,7 @@
 name: Adding SSH Key
 on:
   workflow_dispatch:
-    inputs:
-      actions:
-        description: "anything"
-        required: false
+
 
 jobs:
   Deploy-EC2-using-GHA:
