@@ -17,7 +17,7 @@ jobs:
         with:
           role-to-assume: arn:aws:iam::792514764471:role/configroleawsgha
           role-session-name: samplerolesession
-          aws-region: "us-east-1"
+          aws-region: us-east-1
 
       - name: Create SSH key
         run: |
