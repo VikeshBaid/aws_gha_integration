@@ -21,7 +21,7 @@ jobs:
           echo "$SSH_PRIVATE_KEY" > ../private.key
           sudo chmod 600 ../private.key
           echo ${{ github.workspace }}
-          echo ${{ SSH_KEY_PATH }}
+          echo ${{ env.SSH_KEY_PATH }}
 
       - name: upload file to github
         run: |
