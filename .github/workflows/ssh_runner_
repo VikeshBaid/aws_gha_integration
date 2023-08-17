@@ -1,0 +1,39 @@
+name: Adding SSH Key
+on:
+  workflow dispatch:
+    inputs:
+      actions:
+        description: "anything"
+        required: false
+
+jobs:
+  Deploy-EC2-using-GHA:
+    name: 'CS sensors upload'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: checkout repo contents
+        uses: actions/checkout@v3
+
+      - name: configure aws credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          role-to-assume: arn:aws:iam::792514764471:role/configroleawsgha
+          role-session-name: samplerolesession
+          aws-region: ${{ github.event.inputs.aws-region }}
+
+      - name: Set up Python
+        uses: action/setup-python@v3
+        with:
+          python-version: "3.9"
+
+      - name: Create SSH key
+        run: |
+          mkdir -p ~/.ssh/
+          echo "$SSH_PRIVATE_KEY" > ../private.key
+          sudo chmod 600 ../private.key
+          echo ${{ github.workspace }}
+        shell: bash
+        env:
+          SSH_PRIVATE_KEY: ${{secrets.SSH_PRIVATE_KEY}}
+          SSH_KEY_PATH: ${{ github.workspace }}/../private.key
