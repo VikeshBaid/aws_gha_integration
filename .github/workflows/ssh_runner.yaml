@@ -32,5 +32,5 @@ jobs:
 
       - name: upload file to github
         run: |
-          ssh -T git@github.com:VikeshBaid/aws_gha_integration.git
+          ssh -T git@github.com
           
