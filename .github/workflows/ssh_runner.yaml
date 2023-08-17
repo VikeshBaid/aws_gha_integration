@@ -12,19 +12,13 @@ jobs:
       - name: checkout repo contents
         uses: actions/checkout@v3
 
-      #- name: configure aws credentials
-      #  uses: aws-actions/configure-aws-credentials@v1
-      #  with:
-      #    role-to-assume: arn:aws:iam::792514764471:role/configroleawsgha
-      #    role-session-name: samplerolesession
-      #    aws-region: us-east-1
-
       - name: Create SSH key
         run: |
           mkdir -p ~/.ssh/
           echo "$SSH_PRIVATE_KEY" > ../private.key
           sudo chmod 600 ../private.key
           echo ${{ github.workspace }}
+          echo ${{ SSH_KEY_PATH }}
         shell: bash
         env:
           SSH_PRIVATE_KEY: ${{secrets.SSH_PRIVATE_KEY}}
