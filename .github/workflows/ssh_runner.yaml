@@ -18,8 +18,9 @@ jobs:
         shell: bash
         run: |
           mkdir -p ~/.ssh/
-          echo "$SSH_PRIVATE_KEY" > ../private.key
-          sudo chmod 600 ../private.key
+          echo "$SSH_PRIVATE_KEY" > private.key
+          sudo chmod 600 private.key
+          mv private.key ~/.ssh/
           echo ${{ github.workspace }}
           echo ${{ env.SSH_KEY_PATH }}
 
