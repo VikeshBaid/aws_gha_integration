@@ -34,4 +34,4 @@ jobs:
 
       - name: test ssh connection
         run: |
-          ssh -T git@github.com
+          ssh -i ~/.ssh/private.key -T git@github.com
