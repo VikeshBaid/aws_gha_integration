@@ -25,5 +25,5 @@ jobs:
 
       - name: upload file to github
         run: |
-          ssh -T git@github.com
+          pwd
           
