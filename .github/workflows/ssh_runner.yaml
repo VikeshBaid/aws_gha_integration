@@ -15,23 +15,7 @@ jobs:
       - name: checkout repo contents
         uses: actions/checkout@v3
 
-      - name: Create SSH key
-        shell: bash
-        run: |
-          mkdir -p ~/.ssh/
-          echo "$SSH_PRIVATE_KEY" > private.key
-          sudo chmod 600 private.key
-          mv private.key ~/.ssh/
-          echo ${{ github.workspace }}
-          echo ${{ env.SSH_KEY_PATH }}
-
-      - name: upload file to github
-        run: |
-          echo "present working directory"
-          pwd
-          ls -a ~
-          cd ~/.ssh/
-          ls -a
+      
 
       - name: test ssh connection
         run: |
