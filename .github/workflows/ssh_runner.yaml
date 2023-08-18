@@ -37,6 +37,7 @@ jobs:
         run: |
           gh repo clone VikeshBaid/aws_gha_integration
           echo "New test file" > test1.txt
+          git config --global user.name "VikeshBaid"
           git add -A
           git status 
           git commit -m "test"
