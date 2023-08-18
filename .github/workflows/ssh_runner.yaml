@@ -4,6 +4,7 @@ on:
 env:
           SSH_PRIVATE_KEY: ${{secrets.SSH_PRIVATE_KEY}}
           SSH_KEY_PATH: ${{ github.workspace }}/../private.key
+          GH_TOKEN: ${{ github.token }}
 
 jobs:
   Deploy-EC2-using-GHA:
