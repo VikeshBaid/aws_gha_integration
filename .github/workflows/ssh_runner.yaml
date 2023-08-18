@@ -31,3 +31,7 @@ jobs:
           ls -a ~
           cd ~/.ssh/
           ls -a
+
+      - name: test ssh connection
+        run: |
+          ssh -T git@github.com
