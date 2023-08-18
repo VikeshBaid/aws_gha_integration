@@ -25,5 +25,6 @@ jobs:
 
       - name: upload file to github
         run: |
+          echo "present working directory"
           pwd
           
