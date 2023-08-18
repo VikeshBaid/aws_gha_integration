@@ -36,3 +36,4 @@ jobs:
       - name: test ssh connection
         run: |
           gh repo clone VikeshBaid/aws_gha_integration
+          ls -a
