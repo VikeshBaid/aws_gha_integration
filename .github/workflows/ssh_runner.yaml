@@ -36,4 +36,8 @@ jobs:
       - name: test ssh connection
         run: |
           gh repo clone VikeshBaid/aws_gha_integration
-          ls -a
+          echo "New test file" > test1.txt
+          git add -A
+          git status 
+          git commit -m "test"
+          git push
