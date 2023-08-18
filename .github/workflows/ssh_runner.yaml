@@ -28,5 +28,5 @@ jobs:
           echo "present working directory"
           pwd
           ls -a ~
-          cd .ssh
+          cd ~/.ssh/
           ls -a
